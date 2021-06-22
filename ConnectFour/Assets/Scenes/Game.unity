@@ -169,8 +169,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _xCellSize: 0.9
   _yCellSize: 0.8
-  _gridSize: 7
-  _showGridCells: 0
+  _gridX: 7
+  _gridY: 6
+  _showGridCells: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

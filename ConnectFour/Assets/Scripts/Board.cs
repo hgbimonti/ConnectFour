@@ -13,7 +13,6 @@ public class Board : MonoBehaviour
     private GameObject _redCirclePrefab;
     [SerializeField]
     private GameObject _yellowCirclePrefab;
-
     private GameObject _activeCircle;
     
     private Transform _gridTransform;
@@ -29,21 +28,21 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePositionToGrid = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _gridTransform.position;
 
-        if (_grid.GetNearestCellCoordinates(mousePosition - _gridTransform.position).x >= 0 
-            && _grid.GetNearestCellCoordinates(mousePosition - _gridTransform.position).x < _grid.GridWidth 
-            && _grid.GetNearestCellCoordinates(mousePosition - _gridTransform.position).y == _grid.GridHeight
+        if (_grid.GetNearestCellCoordinates(mousePositionToGrid).x >= 0 
+            && _grid.GetNearestCellCoordinates(mousePositionToGrid).x < _grid.GridWidth 
+            && _grid.GetNearestCellCoordinates(mousePositionToGrid).y == _grid.GridHeight 
             && !_isDroppingCircle)
         {
             if (!_activeCircle.activeSelf)
                 _activeCircle.SetActive(true);
 
-            _activeCircle.transform.position = _grid.GetNearestCellOnGrid(mousePosition - _gridTransform.position);
+            _activeCircle.transform.position = _grid.GetNearestCellOnGrid(mousePositionToGrid);
 
             if (Input.GetMouseButtonDown(0)) 
             {
-                DropCircle(_activeCircle, _grid.GetCellByCoordinates(new Vector3(1, 0, 0)));
+                DropCircle(_grid.GetCellByCoordinates(new Vector2(_grid.GetNearestCellCoordinates(mousePositionToGrid).x, 0)).y);
                 _isDroppingCircle = true;
             }
         }
@@ -54,8 +53,12 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void DropCircle(GameObject circle, Vector3 endPosition) 
+    private void DropCircle(float endValue) 
     {
+        Debug.Log(endValue);
         
+        GameObject circle = Instantiate(_redCirclePrefab, _activeCircle.transform.position, Quaternion.identity);
+        
+        circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => { _isDroppingCircle = false; });
     }
 }

@@ -25,8 +25,7 @@ public class Grid : MonoBehaviour
         int xCount = Mathf.RoundToInt(position.x / _xCellSize);
         int yCount = Mathf.RoundToInt(position.y / _yCellSize);
 
-        Vector3 result = new Vector3((float)xCount * _xCellSize, (float)yCount * _yCellSize, 0f);
-
+        Vector3 result = new Vector2((float)xCount * _xCellSize, (float)yCount * _yCellSize);
         result += transform.position;
 
         return result;
@@ -40,9 +39,10 @@ public class Grid : MonoBehaviour
         return new Vector2(xCount, yCount);
     }
 
-    public Vector2 GetCellByCoordinates(Vector3 coordinates) 
+    public Vector2 GetCellByCoordinates(Vector2 coordinates) 
     {
-        Vector3 result = new Vector3((float)coordinates.x * _xCellSize, (float)coordinates.y * _yCellSize, 0f);
+        Vector3 result = new Vector2((float)coordinates.x * _xCellSize, (float)coordinates.y * _yCellSize);
+        result += transform.position;
 
         return result;
     }
