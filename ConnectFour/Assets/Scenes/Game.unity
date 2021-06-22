@@ -149,11 +149,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405233978}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.701, y: -2.029, z: 0}
+  m_LocalPosition: {x: -2.716, y: -4.621, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 798458330}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &405233980
 MonoBehaviour:
@@ -167,10 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88c878d481253e54b8b29892f06316d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xCellSize: 0.9
-  yCellSize: 0.8
-  gridSize: 7
-  showGridCells: 0
+  _xCellSize: 0.9
+  _yCellSize: 0.8
+  _gridSize: 7
+  _showGridCells: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,6 +264,7 @@ GameObject:
   m_Component:
   - component: {fileID: 798458330}
   - component: {fileID: 798458329}
+  - component: {fileID: 798458331}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -332,8 +333,24 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.01, y: -2.598, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 405233979}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &798458331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798458328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda0947d2dc1c06438ce681cc35adab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grid: {fileID: 405233980}
+  _redCirclePrefab: {fileID: 3306887164428288489, guid: 91e2b5c7a405c3640bdd71a54e59c66c,
+    type: 3}
+  _yellowCirclePrefab: {fileID: 3726619607913916517, guid: c5dce544db8a6ba4da82e371fa80050e,
+    type: 3}
