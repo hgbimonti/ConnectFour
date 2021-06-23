@@ -9,10 +9,6 @@ public class Board : MonoBehaviour
     [SerializeField]
     private Grid _grid;
 
-    [SerializeField]
-    private GameObject _redCirclePrefab;
-    [SerializeField]
-    private GameObject _yellowCirclePrefab;
     private GameObject _activeCircle;
     
     private Transform _gridTransform;
@@ -22,8 +18,11 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         _gridTransform = _grid.GetComponent<Transform>();
+    }
 
-        _activeCircle = Instantiate(_redCirclePrefab);
+    private void Start()
+    {
+        _activeCircle = GameManager.Instance.GetActivePlayerPrefab();
     }
 
     private void Update()
@@ -63,8 +62,15 @@ public class Board : MonoBehaviour
 
     private void DropCircle(float endValue) 
     {
-        GameObject circle = Instantiate(_redCirclePrefab, _activeCircle.transform.position, Quaternion.identity);
+        GameObject circle = Instantiate(_activeCircle, _activeCircle.transform.position, Quaternion.identity);
         
-        circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => { _isDroppingCircle = false; });
+        circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => 
+        { 
+            _isDroppingCircle = false; 
+            
+            GameManager.Instance.NextPlayer();
+
+            _activeCircle = GameManager.Instance.GetActivePlayerPrefab();
+        });
     }
 }
