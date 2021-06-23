@@ -20,6 +20,42 @@ public class Grid : MonoBehaviour
     public int GridWidth { get => _gridX; }
     public int GridHeight { get => _gridY; }
 
+    private int[,] _gridMatrix;
+
+    private void Start()
+    {
+        _gridMatrix = new int[_gridX, _gridY];
+    }
+
+    public Vector2 GetAvailableCellCoordinatesInColumn(int columnID) 
+    {
+        Vector2 result = new Vector2(0, 0);
+        
+        for (int x = 0; x < _gridMatrix.GetLength(0); x++)
+        {
+            for (int y = 0; y < _gridMatrix.GetLength(1); y++)
+            {
+                if (x == columnID) 
+                {
+                    result.x = x;
+
+                    if (_gridMatrix[x, y] > 0)
+                        result.y = y + 1;
+
+                    if (result.y > _gridY - 1)
+                        result.y = -1000;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void SetCellAsUsedInCoordinates(Vector2 cellCoordinates, int playerID) 
+    {
+        _gridMatrix[(int)cellCoordinates.x, (int)cellCoordinates.y] = playerID;
+    }
+
     public Vector2 GetNearestCellOnGrid(Vector2 position)
     {
         int xCount = Mathf.RoundToInt(position.x / _xCellSize);
@@ -31,7 +67,7 @@ public class Grid : MonoBehaviour
         return result;
     }
 
-    public Vector2 GetNearestCellCoordinates(Vector3 position)
+    public Vector2 GetNearestCellCoordinates(Vector2 position)
     {
         int xCount = Mathf.RoundToInt(position.x / _xCellSize);
         int yCount = Mathf.RoundToInt(position.y / _yCellSize);

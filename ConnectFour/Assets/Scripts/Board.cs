@@ -42,21 +42,27 @@ public class Board : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0)) 
             {
-                DropCircle(_grid.GetCellByCoordinates(new Vector2(_grid.GetNearestCellCoordinates(mousePositionToGrid).x, 0)).y);
-                _isDroppingCircle = true;
+                Vector2 availableCellCoordinates = _grid.GetAvailableCellCoordinatesInColumn((int)_grid.GetNearestCellCoordinates(mousePositionToGrid).x);
+                
+                if(availableCellCoordinates.y != -1000) 
+                {
+                    _grid.SetCellAsUsedInCoordinates(availableCellCoordinates, 1);
+
+                    DropCircle(_grid.GetCellByCoordinates(availableCellCoordinates).y);
+
+                    _isDroppingCircle = true;
+                }
             }
         }
         else
         {
-            if(_activeCircle.activeSelf)
+            if (_activeCircle.activeSelf)
                 _activeCircle.SetActive(false);
         }
     }
 
     private void DropCircle(float endValue) 
     {
-        Debug.Log(endValue);
-        
         GameObject circle = Instantiate(_redCirclePrefab, _activeCircle.transform.position, Quaternion.identity);
         
         circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => { _isDroppingCircle = false; });
