@@ -18,7 +18,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public GameObject GetActivePlayerPrefab() 
     {
-        return Instantiate(_playersCirclePrefab[(int)ActivePlayer - 1]);
+        GameObject playerPrefab = Instantiate(_playersCirclePrefab[(int)ActivePlayer - 1]);
+        playerPrefab.name = ActivePlayer.ToString();
+
+        return playerPrefab;
     }
 
     public void NextPlayer() 

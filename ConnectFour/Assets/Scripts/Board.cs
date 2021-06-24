@@ -41,13 +41,18 @@ public class Board : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0)) 
             {
-                Vector2 availableCellCoordinates = _grid.GetAvailableCellCoordinatesInColumn((int)_grid.GetNearestCellCoordinates(mousePositionToGrid).x);
+                int columnID = (int)_grid.GetNearestCellCoordinates(mousePositionToGrid).x;
+                Vector2 availableCellCoordinates = _grid.GetAvailableCellCoordinatesInColumn(columnID);
                 
                 if(availableCellCoordinates.y != -1000) 
                 {
                     _grid.SetCellAsUsedInCoordinates(availableCellCoordinates, 1);
 
-                    DropCircle(_grid.GetCellByCoordinates(availableCellCoordinates).y);
+                    GameObject fallingCirclePrefab = GameManager.Instance.GetActivePlayerPrefab();
+                    fallingCirclePrefab.name += " " + availableCellCoordinates.ToString();
+                    fallingCirclePrefab.transform.position = _activeCircle.transform.position;
+
+                    DropCircle(fallingCirclePrefab, _grid.GetCellByCoordinates(availableCellCoordinates).y);
 
                     _isDroppingCircle = true;
                 }
@@ -55,15 +60,13 @@ public class Board : MonoBehaviour
         }
         else
         {
-            if (_activeCircle.activeSelf)
-                _activeCircle.SetActive(false);
+            if (_isDroppingCircle)
+                Destroy(_activeCircle);
         }
     }
 
-    private void DropCircle(float endValue) 
+    private void DropCircle(GameObject circle, float endValue) 
     {
-        GameObject circle = Instantiate(_activeCircle, _activeCircle.transform.position, Quaternion.identity);
-        
         circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => 
         { 
             _isDroppingCircle = false; 
