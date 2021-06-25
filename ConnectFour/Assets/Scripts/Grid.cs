@@ -51,9 +51,9 @@ public class Grid : MonoBehaviour
         return result;
     }
 
-    public void SetCellAsUsedInCoordinates(Vector2 cellCoordinates, int playerID) 
+    public void SetCellAsUsedInCoordinates(Vector2 cellCoordinates, GameManager.Players player) 
     {
-        _gridMatrix[(int)cellCoordinates.x, (int)cellCoordinates.y] = playerID;
+        _gridMatrix[(int)cellCoordinates.x, (int)cellCoordinates.y] = (int)player;
     }
 
     public Vector2 GetNearestCellOnGrid(Vector2 position)
@@ -81,6 +81,138 @@ public class Grid : MonoBehaviour
         result += transform.position;
 
         return result;
+    }
+
+    public void LookForSequence() 
+    {
+        StartCoroutine(CheckSequencesInColumns());
+    }
+
+    IEnumerator CheckSequencesInColumns() 
+    {
+        int matches = 0;
+
+        Debug.Log("CHECKING COLUMNS...");
+        Debug.Log("-------------------");
+
+        for (int x = 0; x < _gridMatrix.GetLength(0); x++)
+        {
+            if (GameManager.Instance.IsGameOver)
+                break;
+            
+            int playerMatchID = 0;
+            
+            for (int y = 0; y < _gridMatrix.GetLength(1); y++)
+            {
+                if (_gridMatrix[x, y] != 0)
+                {
+                    yield return new WaitForSeconds(0f);
+
+                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                    {
+                        matches = 1;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                    }
+                    else 
+                    {
+                        playerMatchID = _gridMatrix[x, y];
+                        matches++;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
+                    }
+
+                    playerMatchID = _gridMatrix[x, y];
+
+                    if(matches >= 4) 
+                    {
+                        Debug.Log("Player" + playerMatchID + " WINS!");
+                        Debug.Log("GAME OVER");
+
+                        GameManager.Instance.GameOver();
+
+                        break;
+                    }
+                }
+                else 
+                {
+                    //Debug.Log("(x: " + x + " y: " + y + ") empty cell.");
+                    matches = 0;
+                }
+            }
+        }
+
+        if (!GameManager.Instance.IsGameOver) 
+        {
+            Debug.Log("NO WINNER FOUND IN COLUMNS.");
+
+            StartCoroutine(CheckSequencesInLines());
+        }
+    }
+
+    IEnumerator CheckSequencesInLines()
+    {
+        int matches = 0;
+
+        Debug.Log("CHECKING LINES...");
+        Debug.Log("-------------------");
+
+        for (int y = 0; y < _gridMatrix.GetLength(0); y++)
+        {
+            if (GameManager.Instance.IsGameOver)
+                break;
+
+            int playerMatchID = 0;
+
+            for (int x = 0; x < _gridMatrix.GetLength(1); x++)
+            {
+                //Debug.Log("(x: " + x + " y: " + y + ") current cell.");
+
+                if (y == _gridY)
+                    break;
+
+                if (_gridMatrix[x, y] != 0)
+                {
+                    yield return new WaitForSeconds(0f);
+
+                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                    {
+                        matches = 1;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                    }
+                    else
+                    {
+                        playerMatchID = _gridMatrix[x, y];
+                        matches++;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
+                    }
+
+                    playerMatchID = _gridMatrix[x, y];
+
+                    if (matches >= 4)
+                    {
+                        Debug.Log("Player" + playerMatchID + " WINS!");
+                        Debug.Log("GAME OVER");
+
+                        GameManager.Instance.GameOver();
+
+                        break;
+                    }
+                }
+                else
+                {
+                    //Debug.Log("(x: " + x + " y: " + y + ") empty cell.");
+                    matches = 0;
+                }
+            }
+        }
+
+        if (!GameManager.Instance.IsGameOver)
+        {
+            Debug.Log("NO WINNER FOUND IN LINES.");
+        }
     }
 
     private void OnDrawGizmos()

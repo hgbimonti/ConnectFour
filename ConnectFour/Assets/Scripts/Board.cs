@@ -15,13 +15,9 @@ public class Board : MonoBehaviour
 
     private bool _isDroppingCircle;
 
-    private void Awake()
-    {
-        _gridTransform = _grid.GetComponent<Transform>();
-    }
-
     private void Start()
     {
+        _gridTransform = _grid.GetComponent<Transform>();
         _activeCircle = GameManager.Instance.GetActivePlayerPrefab();
     }
 
@@ -34,6 +30,9 @@ public class Board : MonoBehaviour
             && _grid.GetNearestCellCoordinates(mousePositionToGrid).y == _grid.GridHeight 
             && !_isDroppingCircle)
         {
+            if (_activeCircle == null || GameManager.Instance.IsGameOver)
+                return;
+            
             if (!_activeCircle.activeSelf)
                 _activeCircle.SetActive(true);
 
@@ -46,7 +45,7 @@ public class Board : MonoBehaviour
                 
                 if(availableCellCoordinates.y != -1000) 
                 {
-                    _grid.SetCellAsUsedInCoordinates(availableCellCoordinates, 1);
+                    _grid.SetCellAsUsedInCoordinates(availableCellCoordinates, GameManager.Instance.ActivePlayer);
 
                     GameObject fallingCirclePrefab = GameManager.Instance.GetActivePlayerPrefab();
                     fallingCirclePrefab.name += " " + availableCellCoordinates.ToString();
@@ -69,11 +68,23 @@ public class Board : MonoBehaviour
     {
         circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => 
         { 
-            _isDroppingCircle = false; 
-            
+            _isDroppingCircle = false;
+
+            _grid.LookForSequence();
+
+            StartCoroutine(WaitAndSetNextPlayer());
+        });
+    }
+
+    IEnumerator WaitAndSetNextPlayer() 
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        if (!GameManager.Instance.IsGameOver) 
+        {
             GameManager.Instance.NextPlayer();
 
             _activeCircle = GameManager.Instance.GetActivePlayerPrefab();
-        });
+        }
     }
 }
