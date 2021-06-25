@@ -136,7 +136,6 @@ public class Grid : MonoBehaviour
                 }
                 else 
                 {
-                    //Debug.Log("(x: " + x + " y: " + y + ") empty cell.");
                     matches = 0;
                 }
             }
@@ -166,8 +165,6 @@ public class Grid : MonoBehaviour
 
             for (int x = 0; x < _gridMatrix.GetLength(1); x++)
             {
-                //Debug.Log("(x: " + x + " y: " + y + ") current cell.");
-
                 if (y == _gridY)
                     break;
 
@@ -203,7 +200,6 @@ public class Grid : MonoBehaviour
                 }
                 else
                 {
-                    //Debug.Log("(x: " + x + " y: " + y + ") empty cell.");
                     matches = 0;
                 }
             }
