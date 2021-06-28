@@ -17,14 +17,21 @@ public class Grid : MonoBehaviour
     [SerializeField]
     private bool _showGridCells;
 
+    [SerializeField]
+    private GameObject _cellPin;
+
     public int GridWidth { get => _gridX; }
     public int GridHeight { get => _gridY; }
 
     private int[,] _gridMatrix;
+    private List<Vector2> _matchesPositions;
 
     private void Start()
     {
         _gridMatrix = new int[_gridX, _gridY];
+
+        _cellPin = GameManager.Instance.GetTestingPrefab();
+        _cellPin.SetActive(false);
     }
 
     public Vector2 GetAvailableCellCoordinatesInColumn(int columnID) 
@@ -90,132 +97,216 @@ public class Grid : MonoBehaviour
 
     IEnumerator CheckSequencesInColumns() 
     {
-        int matches = 0;
-
-        Debug.Log("-------------------");
-        Debug.Log("CHECKING COLUMNS...");
-
+        if (GameManager.Instance.TestingMode) 
+        {
+            Debug.Log("-------------------");
+            Debug.Log("CHECKING COLUMNS...");
+        }
+        
         for (int x = 0; x < _gridMatrix.GetLength(0); x++)
         {
             if (GameManager.Instance.IsGameOver)
                 break;
-            
-            int playerMatchID = 0;
-            
+
+            int matches = 0;
+
+            int cellCircleID;
+            int lastCircleID = 0;
+
+            _matchesPositions = new List<Vector2>();
+
             for (int y = 0; y < _gridMatrix.GetLength(1); y++)
             {
-                if (_gridMatrix[x, y] != 0)
+                if (GameManager.Instance.TestingMode) 
                 {
-                    yield return new WaitForSeconds(0f);
+                    yield return new WaitForSeconds(0.05f);
+                    _cellPin.transform.position = GetCellByCoordinates(new Vector2(x, y));
+                    _cellPin.SetActive(true);
+                }
 
-                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                cellCircleID = _gridMatrix[x, y];
+
+                if (_gridMatrix[x, y] != 0)
+                {                    
+                    if ((cellCircleID == lastCircleID) || (_gridMatrix[x, 0] != 0  && lastCircleID == 0))
                     {
-                        matches = 1;
+                        matches++;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
+                            
+                        if (matches >= 4)
+                        {
+                            if (GameManager.Instance.TestingMode) 
+                            {
+                                Debug.Log("Player" + cellCircleID + " WINS!");
+                                Debug.Log("GAME OVER");
+
+                                foreach (Vector2 v2 in _matchesPositions)
+                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
+                            }
+
+                            GameManager.Instance.GameOver();
+
+                            break;
+                        }
                     }
                     else 
                     {
-                        playerMatchID = _gridMatrix[x, y];
-                        matches++;
+                        matches = 1;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
-                    }
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
 
-                    playerMatchID = _gridMatrix[x, y];
-
-                    if(matches >= 4) 
-                    {
-                        Debug.Log("Player" + playerMatchID + " WINS!");
-                        Debug.Log("GAME OVER");
-
-                        GameManager.Instance.GameOver();
-
-                        break;
+                            _matchesPositions.Clear();
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
                     }
                 }
                 else 
                 {
                     matches = 0;
+
+                    if (GameManager.Instance.TestingMode) 
+                    {
+                        Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                        _matchesPositions.Clear();
+                    }
                 }
+
+                lastCircleID = cellCircleID;
             }
         }
 
         if (!GameManager.Instance.IsGameOver) 
         {
-            Debug.Log("NO WINNER FOUND IN COLUMNS.");
+            if (GameManager.Instance.TestingMode)
+                Debug.Log("NO WINNER FOUND IN COLUMNS.");
 
-            StartCoroutine(CheckSequencesInLines());
+            StartCoroutine(CheckSequencesInRows());
         }
     }
 
-    IEnumerator CheckSequencesInLines()
+    IEnumerator CheckSequencesInRows()
     {
-        int matches = 0;
-
-        Debug.Log("-------------------");
-        Debug.Log("CHECKING ROWS...");
+        if (GameManager.Instance.TestingMode) 
+        {
+            Debug.Log("-------------------");
+            Debug.Log("CHECKING ROWS...");
+        }
 
         for (int y = 0; y < _gridMatrix.GetLength(1); y++)
         {
             if (GameManager.Instance.IsGameOver)
                 break;
 
-            int playerMatchID = 0;
+            int matches = 0;
+
+            int cellCircleID;
+            int lastCircleID = 0;
+
+            _matchesPositions = new List<Vector2>();
 
             for (int x = 0; x < _gridMatrix.GetLength(0); x++)
             {
+                if (GameManager.Instance.TestingMode) 
+                {
+                    yield return new WaitForSeconds(0.05f);
+                    _cellPin.transform.position = GetCellByCoordinates(new Vector2(x, y));
+                    _cellPin.SetActive(true);
+                } 
+
+                cellCircleID = _gridMatrix[x, y];
+
                 if (_gridMatrix[x, y] != 0)
                 {
-                    yield return new WaitForSeconds(0f);
-
-                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                    if ((cellCircleID == lastCircleID) || (_gridMatrix[0, y] != 0 && lastCircleID == 0))
                     {
-                        matches = 1;
+                        matches++;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
+                            
+                        if (matches >= 4)
+                        {
+                            if (GameManager.Instance.TestingMode) 
+                            {
+                                Debug.Log("Player" + cellCircleID + " WINS!");
+                                Debug.Log("GAME OVER");
+
+                                foreach (Vector2 v2 in _matchesPositions)
+                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
+                            }
+
+                            GameManager.Instance.GameOver();
+
+                            break;
+                        }
                     }
                     else
                     {
-                        playerMatchID = _gridMatrix[x, y];
-                        matches++;
+                        matches = 1;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
-                    }
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
 
-                    playerMatchID = _gridMatrix[x, y];
-
-                    if (matches >= 4)
-                    {
-                        Debug.Log("Player" + playerMatchID + " WINS!");
-                        Debug.Log("GAME OVER");
-
-                        GameManager.Instance.GameOver();
-
-                        break;
+                            _matchesPositions.Clear();
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
                     }
                 }
                 else
                 {
                     matches = 0;
+
+                    if (GameManager.Instance.TestingMode) 
+                    {
+                        Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                        _matchesPositions.Clear();
+                    }
                 }
+
+                lastCircleID = cellCircleID;
             }
         }
 
         if (!GameManager.Instance.IsGameOver)
         {
-            Debug.Log("NO WINNER FOUND IN ROWS.");
+            if (GameManager.Instance.TestingMode)
+                Debug.Log("NO WINNER FOUND IN ROWS.");
 
-            StartCoroutine(CheckDiagonalsRight());
+            if (GameManager.Instance.AllowDiagonals)
+                StartCoroutine(CheckSequencesInDiagonalsRight());
+            else
+            {
+                if (GameManager.Instance.TestingMode) 
+                {
+                    Debug.Log("--- END OF CHECK ---");
+                    _cellPin.SetActive(false);
+                }
+            }
         }
     }
 
-    IEnumerator CheckDiagonalsRight() 
+    IEnumerator CheckSequencesInDiagonalsRight() 
     {
-        int matches = 0;
-
-        Debug.Log("-------------------");
-        Debug.Log("CHECKING DIAGONALS RIGHT...");
+        if (GameManager.Instance.TestingMode) 
+        {
+            Debug.Log("-------------------");
+            Debug.Log("CHECKING DIAGONALS RIGHT...");
+        }
 
         int rows = _gridMatrix.GetLength(0);
         int columns = _gridMatrix.GetLength(1);
@@ -224,9 +315,16 @@ public class Grid : MonoBehaviour
         int d = columns + rows - 1;
         int x, y;
 
+        int cellCircleID;
+        int lastCircleID = 0;
+
+        _matchesPositions = new List<Vector2>();
+
         // go through each diagonal
         for (int i = 0; i < d; i++)
         {
+            int matches = 0;
+
             // row to start
             if (i < columns)
                 x = 0;
@@ -239,44 +337,75 @@ public class Grid : MonoBehaviour
             else
                 y = columns - 1;
 
-            int playerMatchID = 0;
-
             do
             {
-                if(_gridMatrix[x, y] != 0) 
+                if (GameManager.Instance.IsGameOver)
+                    break;
+
+                if (GameManager.Instance.TestingMode) 
                 {
-                    yield return new WaitForSeconds(0.0f);
+                    yield return new WaitForSeconds(0.05f);
+                    _cellPin.transform.position = GetCellByCoordinates(new Vector2(x, y));
+                    _cellPin.SetActive(true);
+                }   
 
-                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                cellCircleID = _gridMatrix[x, y];
+
+                if (_gridMatrix[x, y] != 0) 
+                {                    
+                    if ((cellCircleID == lastCircleID) || (_gridMatrix[x, y] != 0 && lastCircleID == 0))
                     {
-                        matches = 1;
+                        matches++;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
+
+                        if (matches >= 4)
+                        {
+                            if (GameManager.Instance.TestingMode) 
+                            {
+                                Debug.Log("Player" + cellCircleID + " WINS!");
+                                Debug.Log("GAME OVER");
+
+                                foreach (Vector2 v2 in _matchesPositions)
+                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
+                            }
+
+                            GameManager.Instance.GameOver();
+
+                            break;
+                        }
                     }
                     else
                     {
-                        playerMatchID = _gridMatrix[x, y];
-                        matches++;
+                        matches = 1;
 
-                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
-                    }
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
 
-                    playerMatchID = _gridMatrix[x, y];
-
-                    if (matches >= 4)
-                    {
-                        Debug.Log("Player" + playerMatchID + " WINS!");
-                        Debug.Log("GAME OVER");
-
-                        GameManager.Instance.GameOver();
-
-                        break;
+                            _matchesPositions.Clear();
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        } 
                     }
                 }
                 else 
                 {
                     matches = 0;
+
+                    if (GameManager.Instance.TestingMode) 
+                    {
+                        Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                        _matchesPositions.Clear();
+                    }
                 }
+
+                lastCircleID = cellCircleID;
 
                 x++;
                 y--;
@@ -289,18 +418,20 @@ public class Grid : MonoBehaviour
 
         if (!GameManager.Instance.IsGameOver)
         {
-            Debug.Log("NO WINNER FOUND IN DIAGONALS RIGHT.");
+            if (GameManager.Instance.TestingMode)
+                Debug.Log("NO WINNER FOUND IN DIAGONALS RIGHT.");
 
-            StartCoroutine(CheckDiagonalsLeft());
+            StartCoroutine(CheckSequencesInDiagonalsLeft());
         }
     }
 
-    IEnumerator CheckDiagonalsLeft()
+    IEnumerator CheckSequencesInDiagonalsLeft()
     {
-        int matches = 0;
-
-        Debug.Log("-------------------");
-        Debug.Log("CHECKING DIAGONALS LEFT...");
+        if (GameManager.Instance.TestingMode) 
+        {
+            Debug.Log("-------------------");
+            Debug.Log("CHECKING DIAGONALS LEFT...");
+        }
 
         int rows = _gridMatrix.GetLength(0);
         int columns = _gridMatrix.GetLength(1);
@@ -311,9 +442,16 @@ public class Grid : MonoBehaviour
 
         int columnsAux = 0;
 
+        int cellCircleID;
+        int lastCircleID = 0;
+
+        _matchesPositions = new List<Vector2>();
+
         // go through each diagonal
         for (int i = 0; i < 12; i++)
         {
+            int matches = 0;
+
             // row to start
             if (i < columns) 
             {
@@ -331,36 +469,43 @@ public class Grid : MonoBehaviour
             else
                 y = columns - 1;
 
-            int playerMatchID = 0;
-
             do
             {
-                if(_gridMatrix[x, y] != 0) 
+                if (GameManager.Instance.IsGameOver)
+                    break;
+
+                if (GameManager.Instance.TestingMode) 
                 {
-                    if (_gridMatrix[x, y] != 0)
+                    yield return new WaitForSeconds(0.05f);
+                    _cellPin.transform.position = GetCellByCoordinates(new Vector2(x, y));
+                    _cellPin.SetActive(true);
+                } 
+
+                cellCircleID = _gridMatrix[x, y];
+
+                if (_gridMatrix[x, y] != 0) 
+                {
+                    if ((cellCircleID == lastCircleID) || (_gridMatrix[x, y] != 0 && lastCircleID == 0))
                     {
-                        yield return new WaitForSeconds(0.0f);
+                        matches++;
 
-                        if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                        if (GameManager.Instance.TestingMode) 
                         {
-                            matches = 1;
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
 
-                            Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
-                        else
-                        {
-                            playerMatchID = _gridMatrix[x, y];
-                            matches++;
-
-                            Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
-                        }
-
-                        playerMatchID = _gridMatrix[x, y];
 
                         if (matches >= 4)
                         {
-                            Debug.Log("Player" + playerMatchID + " WINS!");
-                            Debug.Log("GAME OVER");
+                            if (GameManager.Instance.TestingMode) 
+                            {
+                                Debug.Log("Player" + cellCircleID + " WINS!");
+                                Debug.Log("GAME OVER");
+
+                                foreach (Vector2 v2 in _matchesPositions)
+                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
+                            } 
 
                             GameManager.Instance.GameOver();
 
@@ -369,9 +514,30 @@ public class Grid : MonoBehaviour
                     }
                     else
                     {
-                        matches = 0;
+                        matches = 1;
+
+                        if (GameManager.Instance.TestingMode) 
+                        {
+                            Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                            _matchesPositions.Clear();
+                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+                        }
                     }
                 }
+                else 
+                {
+                    matches = 0;
+
+                    if (GameManager.Instance.TestingMode) 
+                    {
+                        Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
+
+                        _matchesPositions.Clear();
+                    }
+                }
+
+                lastCircleID = cellCircleID;
 
                 x--;
                 y--;
@@ -382,11 +548,13 @@ public class Grid : MonoBehaviour
                 break;
         }
 
-        if (!GameManager.Instance.IsGameOver)
+        if (!GameManager.Instance.IsGameOver && GameManager.Instance.TestingMode)
         {
             Debug.Log("NO WINNER FOUND IN DIAGONALS LEFT.");
             Debug.Log("--- END OF CHECK ---");
         }
+
+        _cellPin.SetActive(false);
     }
 
     private void OnDrawGizmos()

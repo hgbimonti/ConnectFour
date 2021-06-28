@@ -70,7 +70,8 @@ public class Board : MonoBehaviour
         { 
             _isDroppingCircle = false;
 
-            _grid.LookForSequence();
+            if(!GameManager.Instance.TestingMode)
+                _grid.LookForSequence();
 
             StartCoroutine(WaitAndSetNextPlayer());
         });
