@@ -92,8 +92,8 @@ public class Grid : MonoBehaviour
     {
         int matches = 0;
 
-        Debug.Log("CHECKING COLUMNS...");
         Debug.Log("-------------------");
+        Debug.Log("CHECKING COLUMNS...");
 
         for (int x = 0; x < _gridMatrix.GetLength(0); x++)
         {
@@ -153,21 +153,18 @@ public class Grid : MonoBehaviour
     {
         int matches = 0;
 
-        Debug.Log("CHECKING LINES...");
         Debug.Log("-------------------");
+        Debug.Log("CHECKING ROWS...");
 
-        for (int y = 0; y < _gridMatrix.GetLength(0); y++)
+        for (int y = 0; y < _gridMatrix.GetLength(1); y++)
         {
             if (GameManager.Instance.IsGameOver)
                 break;
 
             int playerMatchID = 0;
 
-            for (int x = 0; x < _gridMatrix.GetLength(1); x++)
+            for (int x = 0; x < _gridMatrix.GetLength(0); x++)
             {
-                if (y == _gridY)
-                    break;
-
                 if (_gridMatrix[x, y] != 0)
                 {
                     yield return new WaitForSeconds(0f);
@@ -207,7 +204,188 @@ public class Grid : MonoBehaviour
 
         if (!GameManager.Instance.IsGameOver)
         {
-            Debug.Log("NO WINNER FOUND IN LINES.");
+            Debug.Log("NO WINNER FOUND IN ROWS.");
+
+            StartCoroutine(CheckDiagonalsRight());
+        }
+    }
+
+    IEnumerator CheckDiagonalsRight() 
+    {
+        int matches = 0;
+
+        Debug.Log("-------------------");
+        Debug.Log("CHECKING DIAGONALS RIGHT...");
+
+        int rows = _gridMatrix.GetLength(0);
+        int columns = _gridMatrix.GetLength(1);
+
+        // number of secondary diagonals
+        int d = columns + rows - 1;
+        int x, y;
+
+        // go through each diagonal
+        for (int i = 0; i < d; i++)
+        {
+            // row to start
+            if (i < columns)
+                x = 0;
+            else
+                x = i - columns + 1;
+
+            // column to start
+            if (i < columns)
+                y = i;
+            else
+                y = columns - 1;
+
+            int playerMatchID = 0;
+
+            do
+            {
+                if(_gridMatrix[x, y] != 0) 
+                {
+                    yield return new WaitForSeconds(0.0f);
+
+                    if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                    {
+                        matches = 1;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                    }
+                    else
+                    {
+                        playerMatchID = _gridMatrix[x, y];
+                        matches++;
+
+                        Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
+                    }
+
+                    playerMatchID = _gridMatrix[x, y];
+
+                    if (matches >= 4)
+                    {
+                        Debug.Log("Player" + playerMatchID + " WINS!");
+                        Debug.Log("GAME OVER");
+
+                        GameManager.Instance.GameOver();
+
+                        break;
+                    }
+                }
+                else 
+                {
+                    matches = 0;
+                }
+
+                x++;
+                y--;
+            }
+            while (x < rows && y >= 0);
+
+            if (GameManager.Instance.IsGameOver)
+                break;
+        }
+
+        if (!GameManager.Instance.IsGameOver)
+        {
+            Debug.Log("NO WINNER FOUND IN DIAGONALS RIGHT.");
+
+            StartCoroutine(CheckDiagonalsLeft());
+        }
+    }
+
+    IEnumerator CheckDiagonalsLeft()
+    {
+        int matches = 0;
+
+        Debug.Log("-------------------");
+        Debug.Log("CHECKING DIAGONALS LEFT...");
+
+        int rows = _gridMatrix.GetLength(0);
+        int columns = _gridMatrix.GetLength(1);
+
+        // number of secondary diagonals
+        int d = columns + rows - 1;
+        int x, y;
+
+        int columnsAux = 0;
+
+        // go through each diagonal
+        for (int i = 0; i < 12; i++)
+        {
+            // row to start
+            if (i < columns) 
+            {
+                x = columns;
+            }
+            else 
+            {
+                x = (i - rows) + (rows - 1 - columnsAux);
+                columnsAux = columnsAux + 2;
+            }
+                
+            // column to start
+            if (i < columns)
+                y = i;
+            else
+                y = columns - 1;
+
+            int playerMatchID = 0;
+
+            do
+            {
+                if(_gridMatrix[x, y] != 0) 
+                {
+                    if (_gridMatrix[x, y] != 0)
+                    {
+                        yield return new WaitForSeconds(0.0f);
+
+                        if (playerMatchID != _gridMatrix[x, y] || playerMatchID == 0)
+                        {
+                            matches = 1;
+
+                            Debug.Log("(x: " + x + " y: " + y + ") Player" + _gridMatrix[x, y] + " FIRST CIRCLE!");
+                        }
+                        else
+                        {
+                            playerMatchID = _gridMatrix[x, y];
+                            matches++;
+
+                            Debug.Log("(x: " + x + " y: " + y + ") Player" + playerMatchID + " CIRCLE MATCH = " + matches);
+                        }
+
+                        playerMatchID = _gridMatrix[x, y];
+
+                        if (matches >= 4)
+                        {
+                            Debug.Log("Player" + playerMatchID + " WINS!");
+                            Debug.Log("GAME OVER");
+
+                            GameManager.Instance.GameOver();
+
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        matches = 0;
+                    }
+                }
+
+                x--;
+                y--;
+            }
+            while (x >= 0 && y >= 0);
+
+            if (GameManager.Instance.IsGameOver)
+                break;
+        }
+
+        if (!GameManager.Instance.IsGameOver)
+        {
+            Debug.Log("NO WINNER FOUND IN DIAGONALS LEFT.");
+            Debug.Log("--- END OF CHECK ---");
         }
     }
 

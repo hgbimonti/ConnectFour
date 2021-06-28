@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -48,5 +49,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public void GameOver(int winnerPlayerID = 0) 
     {
         _isGameOver = true;
+    }
+
+    public void Reset()
+    {
+        SceneManager.LoadScene(0);
     }
 }
