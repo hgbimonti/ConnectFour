@@ -321,8 +321,8 @@ public class Grid : MonoBehaviour
             }
             else 
             {
-                x = (i - rows) + (rows - 1 - columnsAux);
-                columnsAux = columnsAux + 2;
+                x = (i - rows) + (columns - columnsAux);
+                columnsAux += 2;
             }
                 
             // column to start
