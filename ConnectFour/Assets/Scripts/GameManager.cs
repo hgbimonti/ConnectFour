@@ -34,6 +34,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     private new void Awake()
     {
         ActivePlayer = Players.Player1;
+
+        UIManager.Instance.ViewTestingGUI = _testingMode;
     }
 
     public GameObject GetActivePlayerPrefab() 

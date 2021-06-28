@@ -17,7 +17,6 @@ public class Grid : MonoBehaviour
     [SerializeField]
     private bool _showGridCells;
 
-    [SerializeField]
     private GameObject _cellPin;
 
     public int GridWidth { get => _gridX; }
