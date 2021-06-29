@@ -43,6 +43,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         UIManager.Instance.ViewTestingGUI = _testingMode;
     }
 
+    /// <summary>
+    /// Returns the circle prefab of the current active player.
+    /// </summary>
     public GameObject GetActivePlayerPrefab() 
     {
         GameObject playerPrefab = Instantiate(_playersCirclePrefabs[(int)ActivePlayer - 1]);
@@ -52,6 +55,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         return playerPrefab;
     }
 
+    /// <summary>
+    /// Returns the dot prefab to show during testing (0 for blue dot, 1 for green dot).
+    /// </summary>
     public GameObject GetTestingPrefab(int id = 0) 
     {
         if(id >= _testingCirclePrefabs.Length) 
@@ -74,6 +80,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             
     }
 
+    /// <summary>
+    /// Sets the next player based on the active player at the moment.
+    /// </summary>
     public void NextPlayer() 
     {  
         if (ActivePlayer == Players.Player1)
@@ -84,6 +93,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         UIManager.Instance.SetActivePlayerUI(ActivePlayer);
     }
 
+    /// <summary>
+    /// Sets the game as over.
+    /// </summary>
     public void GameOver(bool withWinner = true) 
     {
         _isGameOver = true;
@@ -91,6 +103,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         UIManager.Instance.ShowGameOver(withWinner);
     }
 
+    /// <summary>
+    /// Reloads the game scene.
+    /// </summary>
     public void ResetGame()
     {
         SceneManager.LoadScene(0);

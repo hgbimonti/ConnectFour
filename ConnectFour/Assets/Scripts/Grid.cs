@@ -33,6 +33,9 @@ public class Grid : MonoBehaviour
         _cellPin.SetActive(false);
     }
 
+    /// <summary>
+    /// Returns the X Y coordinates of the next available position in the specific column id (order starts in 0).
+    /// </summary>
     public Vector2 GetAvailableCellCoordinatesInColumn(int columnID) 
     {
         Vector2 result = new Vector2(0, 0);
@@ -57,11 +60,17 @@ public class Grid : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Sets to the grid matrix the cell coordinate on the grid to be set as used by a player.
+    /// </summary>
     public void SetCellAsUsedInCoordinates(Vector2 cellCoordinates, GameManager.Players player) 
     {
         _gridMatrix[(int)cellCoordinates.x, (int)cellCoordinates.y] = (int)player;
     }
 
+    /// <summary>
+    /// Returns the nearest cell position to the informed position.
+    /// </summary>
     public Vector2 GetNearestCellOnGrid(Vector2 position)
     {
         int xCount = Mathf.RoundToInt(position.x / _xCellSize);
@@ -73,6 +82,9 @@ public class Grid : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Returns the nearest cell coordinates X Y to the informed position.
+    /// </summary>
     public Vector2 GetNearestCellCoordinates(Vector2 position)
     {
         int xCount = Mathf.RoundToInt(position.x / _xCellSize);
@@ -81,6 +93,9 @@ public class Grid : MonoBehaviour
         return new Vector2(xCount, yCount);
     }
 
+    /// <summary>
+    /// Returns the cell position by informing the X Y coordinates.
+    /// </summary>
     public Vector2 GetCellByCoordinates(Vector2 coordinates) 
     {
         Vector3 result = new Vector2((float)coordinates.x * _xCellSize, (float)coordinates.y * _yCellSize);
@@ -89,11 +104,17 @@ public class Grid : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Start to look for sequences in defined directions.
+    /// </summary>
     public void LookForSequence() 
     {
         StartCoroutine(CheckSequencesInColumns());
     }
 
+    /// <summary>
+    /// Checks for matching grid positions in vertical direction. Four matches to win.
+    /// </summary>
     IEnumerator CheckSequencesInColumns() 
     {
         if (GameManager.Instance.TestingMode) 
@@ -192,6 +213,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks for matching grid positions in horizontal direction. Four matches to win.
+    /// </summary>
     IEnumerator CheckSequencesInRows()
     {
         if (GameManager.Instance.TestingMode) 
@@ -299,6 +323,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks for matching grid positions in diagonal direction starting left to right. Four matches to win.
+    /// </summary>
     IEnumerator CheckSequencesInDiagonalsRight() 
     {
         if (GameManager.Instance.TestingMode) 
@@ -424,6 +451,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks for matching grid positions in diagonal direction starting right to left. Four matches to win.
+    /// </summary>
     IEnumerator CheckSequencesInDiagonalsLeft()
     {
         if (GameManager.Instance.TestingMode) 
@@ -557,6 +587,9 @@ public class Grid : MonoBehaviour
         _cellPin.SetActive(false);
     }
 
+    /// <summary>
+    /// Turn on Show Grid Cells in the inspector to see the grid in the Editor window. 
+    /// </summary>
     private void OnDrawGizmos()
     {
         if (_showGridCells) 

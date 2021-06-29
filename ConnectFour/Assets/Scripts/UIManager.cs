@@ -33,6 +33,9 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
         _winnerLabel.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the Game Over UI and can show if there is a winner.
+    /// </summary>
     public void ShowGameOver(bool withWinner = true) 
     {
         _gameOverLabel.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
@@ -50,6 +53,9 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
         });
     }
 
+    /// <summary>
+    /// Highlights the active user in the UI. 
+    /// </summary>
     public void SetActivePlayerUI(GameManager.Players player) 
     {
         if(player == GameManager.Players.Player1) 

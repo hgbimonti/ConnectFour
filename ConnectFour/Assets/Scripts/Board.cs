@@ -25,6 +25,7 @@ public class Board : MonoBehaviour
     {
         Vector3 mousePositionToGrid = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _gridTransform.position;
 
+        //mouse position in board limits 
         if (_grid.GetNearestCellCoordinates(mousePositionToGrid).x >= 0 
             && _grid.GetNearestCellCoordinates(mousePositionToGrid).x < _grid.GridWidth 
             && _grid.GetNearestCellCoordinates(mousePositionToGrid).y == _grid.GridHeight 
@@ -64,6 +65,9 @@ public class Board : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Drops the circle to the end position value.
+    /// </summary>
     private void DropCircle(GameObject circle, float endValue) 
     {
         circle.transform.DOMoveY(endValue, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => 
@@ -84,6 +88,9 @@ public class Board : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// A bit of a delay to set the next user.
+    /// </summary>
     IEnumerator WaitAndSetNextPlayer() 
     {
         yield return new WaitForSeconds(0.2f);
