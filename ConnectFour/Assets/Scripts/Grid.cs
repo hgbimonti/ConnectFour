@@ -131,11 +131,11 @@ public class Grid : MonoBehaviour
                     {
                         matches++;
 
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
                             
                         if (matches >= 4)
@@ -144,10 +144,10 @@ public class Grid : MonoBehaviour
                             {
                                 Debug.Log("Player" + cellCircleID + " WINS!");
                                 Debug.Log("GAME OVER");
-
-                                foreach (Vector2 v2 in _matchesPositions)
-                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
                             }
+
+                            foreach (Vector2 v2 in _matchesPositions)
+                                GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
 
                             GameManager.Instance.GameOver();
 
@@ -161,10 +161,10 @@ public class Grid : MonoBehaviour
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Clear();
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
+
+                        _matchesPositions.Clear();
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                     }
                 }
                 else 
@@ -174,9 +174,9 @@ public class Grid : MonoBehaviour
                     if (GameManager.Instance.TestingMode) 
                     {
                         Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                        _matchesPositions.Clear();
                     }
+
+                    _matchesPositions.Clear();
                 }
 
                 lastCircleID = cellCircleID;
@@ -232,20 +232,20 @@ public class Grid : MonoBehaviour
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
-                            
+
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
+
                         if (matches >= 4)
                         {
                             if (GameManager.Instance.TestingMode) 
                             {
                                 Debug.Log("Player" + cellCircleID + " WINS!");
                                 Debug.Log("GAME OVER");
-
-                                foreach (Vector2 v2 in _matchesPositions)
-                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
                             }
+
+                            foreach (Vector2 v2 in _matchesPositions)
+                                GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
 
                             GameManager.Instance.GameOver();
 
@@ -259,10 +259,10 @@ public class Grid : MonoBehaviour
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Clear();
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
+
+                        _matchesPositions.Clear();
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                     }
                 }
                 else
@@ -272,9 +272,9 @@ public class Grid : MonoBehaviour
                     if (GameManager.Instance.TestingMode) 
                     {
                         Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                        _matchesPositions.Clear();
                     }
+
+                    _matchesPositions.Clear();
                 }
 
                 lastCircleID = cellCircleID;
@@ -352,16 +352,16 @@ public class Grid : MonoBehaviour
 
                 if (_gridMatrix[x, y] != 0) 
                 {                    
-                    if ((cellCircleID == lastCircleID) || (_gridMatrix[x, y] != 0 && lastCircleID == 0))
+                    if (cellCircleID == lastCircleID)
                     {
                         matches++;
 
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
+
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
 
                         if (matches >= 4)
                         {
@@ -369,10 +369,10 @@ public class Grid : MonoBehaviour
                             {
                                 Debug.Log("Player" + cellCircleID + " WINS!");
                                 Debug.Log("GAME OVER");
-
-                                foreach (Vector2 v2 in _matchesPositions)
-                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
                             }
+
+                            foreach (Vector2 v2 in _matchesPositions)
+                                GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
 
                             GameManager.Instance.GameOver();
 
@@ -386,10 +386,10 @@ public class Grid : MonoBehaviour
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
+                        }
 
-                            _matchesPositions.Clear();
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
-                        } 
+                        _matchesPositions.Clear();
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                     }
                 }
                 else 
@@ -399,9 +399,9 @@ public class Grid : MonoBehaviour
                     if (GameManager.Instance.TestingMode) 
                     {
                         Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                        _matchesPositions.Clear();
                     }
+
+                    _matchesPositions.Clear();
                 }
 
                 lastCircleID = cellCircleID;
@@ -484,16 +484,16 @@ public class Grid : MonoBehaviour
 
                 if (_gridMatrix[x, y] != 0) 
                 {
-                    if ((cellCircleID == lastCircleID) || (_gridMatrix[x, y] != 0 && lastCircleID == 0))
+                    if (cellCircleID == lastCircleID)
                     {
                         matches++;
 
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
+
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
 
                         if (matches >= 4)
                         {
@@ -501,10 +501,10 @@ public class Grid : MonoBehaviour
                             {
                                 Debug.Log("Player" + cellCircleID + " WINS!");
                                 Debug.Log("GAME OVER");
+                            }
 
-                                foreach (Vector2 v2 in _matchesPositions)
-                                    GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
-                            } 
+                            foreach (Vector2 v2 in _matchesPositions)
+                                GameManager.Instance.GetTestingPrefab(1).transform.position = v2;
 
                             GameManager.Instance.GameOver();
 
@@ -518,10 +518,10 @@ public class Grid : MonoBehaviour
                         if (GameManager.Instance.TestingMode) 
                         {
                             Debug.Log("(x: " + x + " y: " + y + ") Circle for player" + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                            _matchesPositions.Clear();
-                            _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                         }
+
+                        _matchesPositions.Clear();
+                        _matchesPositions.Add(GetCellByCoordinates(new Vector2(x, y)));
                     }
                 }
                 else 
@@ -531,9 +531,10 @@ public class Grid : MonoBehaviour
                     if (GameManager.Instance.TestingMode) 
                     {
                         Debug.Log("(x: " + x + " y: " + y + ") Cell empty " + cellCircleID + " CIRCLE MATCH = " + matches);
-
-                        _matchesPositions.Clear();
                     }
+
+                    _matchesPositions.Clear();
+
                 }
 
                 lastCircleID = cellCircleID;

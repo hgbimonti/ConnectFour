@@ -31,9 +31,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     [SerializeField]
     private bool _testingMode = false;
 
+    public bool TestingAutoCheck { get => _testingAutoCheck; }
+    [SerializeField]
+    private bool _testingAutoCheck = false;
+
     private new void Awake()
     {
         ActivePlayer = Players.Player1;
+        UIManager.Instance.SetActivePlayerUI(ActivePlayer);
 
         UIManager.Instance.ViewTestingGUI = _testingMode;
     }
@@ -75,11 +80,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             ActivePlayer = Players.Player2;
         else
             ActivePlayer = Players.Player1;
+
+        UIManager.Instance.SetActivePlayerUI(ActivePlayer);
     }
 
-    public void GameOver(int winnerPlayerID = 0) 
+    public void GameOver(bool withWinner = true) 
     {
         _isGameOver = true;
+
+        UIManager.Instance.ShowGameOver(withWinner);
     }
 
     public void ResetGame()
