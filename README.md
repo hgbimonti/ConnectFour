@@ -7,6 +7,10 @@ Developed by Higor Bimonti
 Play now: https://storage.googleapis.com/finemug/connectfourweb/index.html
 (tested on Chrome and Firefox latest versions)
 
+How to play:
+Use the top of the board to choose the column you want to drop the circle. Click on it to drop.
+The player that first gets a sequence of four circles of the same color in vertical, horizon or diagonal directions wins the game.
+
 ![game](https://user-images.githubusercontent.com/952739/123731588-ccdd7600-d86e-11eb-8634-693990337dad.PNG)
 
 Connect Four is at the moment a prototype of a 1 vs 1 local multiplayer game made with Unity version 2020.3.12f.
